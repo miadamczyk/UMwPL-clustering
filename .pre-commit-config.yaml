@@ -1,11 +1,6 @@
 repos:
-  - repo: https://github.com/psf/black
-    rev: 23.3.0  # You can check for the latest version
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.3.4  # Check for the latest version at https://github.com/astral-sh/ruff-pre-commit
     hooks:
-      - id: black
-        language_version: python3
-
-  - repo: https://github.com/pycqa/flake8
-    rev: 6.0.0
-    hooks:
-      - id: flake8
+      - id: ruff
+        args: [--fix]  # Enables automatic fixing of issues
