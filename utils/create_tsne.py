@@ -20,7 +20,8 @@ def smiles_to_fingerprints(smiles_list, n_bits=2048):
     return np.array(fps)
 
 
-def generate_tsne(csv_path, labels, n_bits=2048, perplexity=30.0, random_state=42, save_path="tsne_plot.png"):
+def generate_tsne(csv_path, labels, n_bits=2048, perplexity=30.0, random_state=42,
+                  save_path="tsne_plot.png", metrics_info=None):
     df = pd.read_csv(csv_path)
     df = df.dropna(subset=["Smiles"])
     smiles = df["Smiles"].tolist()
@@ -34,7 +35,6 @@ def generate_tsne(csv_path, labels, n_bits=2048, perplexity=30.0, random_state=4
 
     plt.figure(figsize=(10, 8))
 
-    # Convert labels to array
     labels = np.array(labels)
     unique_labels = np.unique(labels)
     colors = plt.cm.tab10(np.linspace(0, 1, len(unique_labels)))
@@ -42,9 +42,13 @@ def generate_tsne(csv_path, labels, n_bits=2048, perplexity=30.0, random_state=4
     for i, label in enumerate(unique_labels):
         indices = labels == label
         plt.scatter(tsne_results[indices, 0], tsne_results[indices, 1],
-                    color=colors[i], label=f'Cluster {label}', alpha=0.7, s=20)  # s=20 for half-size points
+                    color=colors[i], label=f'Cluster {label}', alpha=0.7, s=20)
 
-    plt.title("t-SNE visualization of clustered molecules")
+    title = "t-SNE visualization of clustered molecules"
+    if metrics_info:
+        title += f"\n{metrics_info}"
+
+    plt.title(title)
     plt.xlabel("t-SNE 1")
     plt.ylabel("t-SNE 2")
     plt.legend(loc='upper right', title="Clusters")
