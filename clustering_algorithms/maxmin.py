@@ -1,8 +1,11 @@
 from sklearn.base import BaseEstimator, ClusterMixin
 from rdkit.DataStructs import FingerprintSimilarity
-from utils.loader import FingerprintLoader  # assuming you save it as fingerprint_loader.py
+from utils.loader import (
+    FingerprintLoader,
+)  # assuming you save it as fingerprint_loader.py
 
 import numpy as np
+
 
 class MaxMinFingerprintClustering(BaseEstimator, ClusterMixin):
     def __init__(self, n_clusters=3, n_bits=2048, random_state=None):

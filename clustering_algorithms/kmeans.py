@@ -5,6 +5,7 @@ from utils.loader import FingerprintLoader
 
 import numpy as np
 
+
 class KMeansFingerprintClustering(BaseEstimator, ClusterMixin):
     def __init__(self, n_clusters=3, n_bits=2048, random_state=None):
         self.n_clusters = n_clusters
@@ -17,7 +18,9 @@ class KMeansFingerprintClustering(BaseEstimator, ClusterMixin):
 
     def fit(self, X, y=None):
         features = self.loader.load_and_transform(X)
-        self.kmeans_model = KMeans(n_clusters=self.n_clusters, random_state=self.random_state)
+        self.kmeans_model = KMeans(
+            n_clusters=self.n_clusters, random_state=self.random_state
+        )
         self.kmeans_model.fit(features)
         self.labels_ = self.kmeans_model.labels_
         self.cluster_centers_ = self.kmeans_model.cluster_centers_

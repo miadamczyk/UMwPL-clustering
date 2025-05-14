@@ -5,7 +5,7 @@ from sklearn.metrics import (
     homogeneity_score,
     completeness_score,
     v_measure_score,
-    silhouette_score
+    silhouette_score,
 )
 from utils.loader import FingerprintLoader
 
@@ -33,9 +33,9 @@ def compute_metric(metric_name, true_vals, features, labels):
 
 def evaluate_clustering(csv_path, labels, metric_name, n_bits=2048):
     df = pd.read_csv(csv_path)
-    df = df.dropna(subset=['Smiles', 'Standard Value'])
+    df = df.dropna(subset=["Smiles", "Standard Value"])
 
-    true_vals = df['Standard Value'].astype(float).values
+    true_vals = df["Standard Value"].astype(float).values
     loader = FingerprintLoader(n_bits=n_bits)
     features = loader.load_and_transform(csv_path)
 

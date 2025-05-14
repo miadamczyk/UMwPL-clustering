@@ -7,23 +7,26 @@ from glob import glob
 # Example terminal usage:
 # python script_name.py data/ cleaned_data/
 
-def process_chembl_data(input_csv, output_csv):
+
+def process_chembl_data(input_csv: str, output_csv: str) -> None:
     try:
         # Try reading with utf-8 first, then fallback
         try:
-            df = pd.read_csv(input_csv, on_bad_lines='skip')
+            df: pd.DataFrame = pd.read_csv(input_csv, on_bad_lines="skip")
         except UnicodeDecodeError:
-            df = pd.read_csv(input_csv, encoding='ISO-8859-1', on_bad_lines='skip')
+            df = pd.read_csv(input_csv, encoding="ISO-8859-1", on_bad_lines="skip")
 
         # Strip whitespace from column names
         df.columns = df.columns.str.strip()
 
         # Try with semicolon separator if default fails
-        if not {'Molecule ChEMBL ID', 'Standard Value', 'Smiles'}.issubset(df.columns):
-            df = pd.read_csv(input_csv, sep=';', encoding='ISO-8859-1', on_bad_lines='skip')
+        if not {"Molecule ChEMBL ID", "Standard Value", "Smiles"}.issubset(df.columns):
+            df = pd.read_csv(
+                input_csv, sep=";", encoding="ISO-8859-1", on_bad_lines="skip"
+            )
             df.columns = df.columns.str.strip()
 
-        required_columns = ['Molecule ChEMBL ID', 'Standard Value', 'Smiles']
+        required_columns = ["Molecule ChEMBL ID", "Standard Value", "Smiles"]
 
         if not all(col in df.columns for col in required_columns):
             print(f"Skipping {input_csv}: required columns not found.")
@@ -38,9 +41,14 @@ def process_chembl_data(input_csv, output_csv):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Process multiple ChEMBL dataset CSV files in a folder.")
+    parser = argparse.ArgumentParser(
+        description="Process multiple ChEMBL dataset CSV files in a folder."
+    )
     parser.add_argument("data_folder", help="Path to the folder containing CSV files")
-    parser.add_argument("output_folder", help="Path to the folder where processed CSV files will be saved")
+    parser.add_argument(
+        "output_folder",
+        help="Path to the folder where processed CSV files will be saved",
+    )
     args = parser.parse_args()
 
     os.makedirs(args.output_folder, exist_ok=True)

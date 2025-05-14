@@ -11,8 +11,8 @@ class FingerprintLoader:
 
     def load_fingerprints(self, csv_path):
         df = pd.read_csv(csv_path)
-        df = df.dropna(subset=['Smiles'])
-        smiles_list = df['Smiles'].tolist()
+        df = df.dropna(subset=["Smiles"])
+        smiles_list = df["Smiles"].tolist()
         fps = []
         for sm in smiles_list:
             mol = Chem.MolFromSmiles(sm)
@@ -22,9 +22,9 @@ class FingerprintLoader:
 
     def load_and_transform(self, csv_path):
         df = pd.read_csv(csv_path)
-        df = df.dropna(subset=['Smiles', 'Standard Value'])
-        smiles_list = df['Smiles'].tolist()
-        values = df['Standard Value'].astype(float).to_numpy().reshape(-1, 1)
+        df = df.dropna(subset=["Smiles", "Standard Value"])
+        smiles_list = df["Smiles"].tolist()
+        values = df["Standard Value"].astype(float).to_numpy().reshape(-1, 1)
 
         fps = []
         for sm in smiles_list:
