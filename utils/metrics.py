@@ -7,7 +7,7 @@ from sklearn.metrics import (
     v_measure_score,
     silhouette_score,
 )
-from utils.loader import FingerprintLoader
+from utils.fingerprint_transformer import FingerprintTransformer
 
 import pandas as pd
 
@@ -36,7 +36,7 @@ def evaluate_clustering(csv_path, labels, metric_name, n_bits=2048):
     df = df.dropna(subset=["Smiles", "Standard Value"])
 
     true_vals = df["Standard Value"].astype(float).values
-    loader = FingerprintLoader(n_bits=n_bits)
+    loader = FingerprintTransformer(n_bits=n_bits)
     features = loader.load_and_transform(csv_path)
 
     if metric_name == "silhouette_score":

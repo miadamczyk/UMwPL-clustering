@@ -1,61 +1,47 @@
 from sklearn.base import BaseEstimator, ClusterMixin
 from rdkit.DataStructs import FingerprintSimilarity
-from utils.loader import (
-    FingerprintLoader,
-)  # assuming you save it as fingerprint_loader.py
-
+from rdkit.ML.Cluster import MaxMinPicker
 import numpy as np
 
-
 class MaxMinFingerprintClustering(BaseEstimator, ClusterMixin):
-    def __init__(self, n_clusters=3, n_bits=2048, random_state=None):
+    def __init__(self, n_clusters=3, random_state=None):
         self.n_clusters = n_clusters
-        self.n_bits = n_bits
         self.random_state = random_state
-        self.labels_ = None
         self.cluster_centers_ = None
-        self.loader = FingerprintLoader(n_bits)
+        self.labels_ = None
 
-    def fit(self, X, y=None):
-        fps = self.loader.load_fingerprints(X)
+    def fit(self, fps, y=None):
         fps_valid = [fp for fp in fps if fp is not None]
         n_samples = len(fps_valid)
         if n_samples == 0:
-            raise ValueError("No data.")
+            raise ValueError("No valid fingerprints.")
         if not (0 < self.n_clusters <= n_samples):
-            raise ValueError(f"Num of clusters {self.n_clusters} is wrong.")
+            raise ValueError(f"Invalid number of clusters: {self.n_clusters}")
 
-        rng = np.random.default_rng(self.random_state)
-        first_idx = int(rng.integers(0, n_samples))
-        centers_idx = [first_idx]
-        min_dists = np.full(n_samples, np.inf)
-        min_dists[first_idx] = 0.0
+        picker = MaxMinPicker()
 
-        for _ in range(1, self.n_clusters):
-            for idx in range(n_samples):
-                if idx in centers_idx:
-                    continue
-                sim = FingerprintSimilarity(fps_valid[centers_idx[-1]], fps_valid[idx])
-                dist = 1.0 - sim
-                if dist < min_dists[idx]:
-                    min_dists[idx] = dist
-            next_idx = int(np.argmax(min_dists))
-            centers_idx.append(next_idx)
-            min_dists[next_idx] = 0.0
+        def dist_func(i, j):
+            return 1.0 - FingerprintSimilarity(fps_valid[i], fps_valid[j])
 
-        centers = [fps_valid[i] for i in centers_idx]
-        self.cluster_centers_ = centers
+        centers_idx = picker.LazyPick(self.n_clusters, n_samples, dist_func, seed=self.random_state)
+        self.cluster_centers_ = [fps_valid[i] for i in centers_idx]
+
+        return self
+
+    def predict(self, fps):
+        if self.cluster_centers_ is None:
+            raise ValueError("Model has not been fitted yet.")
 
         labels = []
         for fp in fps:
             if fp is None:
                 labels.append(-1)
-            else:
-                sims = [FingerprintSimilarity(fp, center) for center in centers]
-                labels.append(int(np.argmax(sims)))
+                continue
+            sims = [FingerprintSimilarity(fp, center) for center in self.cluster_centers_]
+            labels.append(int(np.argmax(sims)))
         self.labels_ = np.array(labels)
-        return self
-
-    def fit_predict(self, X, y=None):
-        self.fit(X)
         return self.labels_
+
+    def fit_predict(self, fps, y=None):
+        self.fit(fps, y)
+        return self.predict(fps)

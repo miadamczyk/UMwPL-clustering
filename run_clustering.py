@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-from clustering_algorithms.kmeans import KMeansFingerprintClustering
-from clustering_algorithms.maxmin import MaxMinFingerprintClustering
+from clustering_algorithms.clusterer import get_clusterer
+
 from utils.create_tsne import generate_tsne
 from utils.create_umap import generate_umap
 from utils.metrics import evaluate_clustering
 
 import argparse
 import os
+import pandas as pd
 
 
 def parse_arguments():
@@ -67,18 +68,17 @@ def parse_arguments():
 
 def main():
     args = parse_arguments()
+    df = pd.read_csv(args.csv)
+    smiles = df["Smiles"].dropna().tolist()
 
-    if args.algo == "kmeans":
-        clusterer = KMeansFingerprintClustering(
-            n_clusters=args.clusters, random_state=42
-        )
-    elif args.algo == "maxmin":
-        clusterer = MaxMinFingerprintClustering(
-            n_clusters=args.clusters, random_state=42
-        )
+    try:
+        pipeline = get_clusterer(args.algo, n_clusters=args.clusters)
+    except ValueError as e:
+        print(e)
+        return
 
     print(f"Running {args.algo.upper()} clustering on: {args.csv}")
-    labels = clusterer.fit_predict(args.csv)
+    labels = pipeline.fit_predict(smiles)
 
     print("\n=== Cluster Assignments ===")
     for idx, label in enumerate(labels):
@@ -105,7 +105,6 @@ def main():
     if args.tsne or args.umap:
         print("\nGenerating visualization...")
 
-        # Pass the metrics information to the visualization function
         if args.tsne:
             save_path = f"tsne_{csv_name}-{args.algo}-clusters_{num_clusters}.png"
             generate_tsne(

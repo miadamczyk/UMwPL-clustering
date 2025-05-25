@@ -5,21 +5,18 @@ from glob import glob
 
 
 # Example terminal usage:
-# python script_name.py data/ cleaned_data/
+# python sc#ript_name.py data/ cleaned_data/
 
 
 def process_chembl_data(input_csv: str, output_csv: str) -> None:
     try:
-        # Try reading with utf-8 first, then fallback
         try:
             df: pd.DataFrame = pd.read_csv(input_csv, on_bad_lines="skip")
         except UnicodeDecodeError:
             df = pd.read_csv(input_csv, encoding="ISO-8859-1", on_bad_lines="skip")
 
-        # Strip whitespace from column names
         df.columns = df.columns.str.strip()
 
-        # Try with semicolon separator if default fails
         if not {"Molecule ChEMBL ID", "Standard Value", "Smiles"}.issubset(df.columns):
             df = pd.read_csv(
                 input_csv, sep=";", encoding="ISO-8859-1", on_bad_lines="skip"
