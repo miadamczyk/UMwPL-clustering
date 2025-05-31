@@ -7,17 +7,7 @@ import matplotlib.pyplot as plt
 import umap
 import numpy as np
 
-
-def smiles_to_fingerprints(smiles_list, n_bits=2048):
-    fps = []
-    for sm in smiles_list:
-        mol = Chem.MolFromSmiles(sm)
-        if mol is not None:
-            fp = rdMolDescriptors.GetMorganFingerprintAsBitVect(mol, 2, nBits=n_bits)
-            arr = np.zeros((n_bits,), dtype=int)
-            ConvertToNumpyArray(fp, arr)
-            fps.append(arr)
-    return np.array(fps)
+from utils.fingerprint_transformer import smiles_to_fingerprints
 
 
 def generate_umap(
@@ -70,7 +60,6 @@ def generate_umap(
     plt.title(title)
     plt.xlabel("UMAP 1")
     plt.ylabel("UMAP 2")
-    plt.legend(loc="upper right", title="Clusters")
     plt.tight_layout()
     plt.savefig(save_path)
     plt.close()

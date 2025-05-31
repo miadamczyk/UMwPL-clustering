@@ -32,7 +32,7 @@ def parse_arguments():
         "--algo",
         "-a",
         type=str,
-        choices=["kmeans", "maxmin"],
+        choices=["kmeans", "maxmin", "agglomerative", "birch", "ward", "spectral"],
         default="kmeans",
         help="Clustering algorithm to use (default: kmeans).",
     )
@@ -80,9 +80,9 @@ def main():
     print(f"Running {args.algo.upper()} clustering on: {args.csv}")
     labels = pipeline.fit_predict(smiles)
 
-    print("\n=== Cluster Assignments ===")
-    for idx, label in enumerate(labels):
-        print(f"Sample {idx + 1}: Cluster {label}")
+    # print("\n=== Cluster Assignments ===")
+    # for idx, label in enumerate(labels):
+    #     print(f"Sample {idx + 1}: Cluster {label}")
 
     metric_scores = {}
     if args.metric:
