@@ -32,7 +32,7 @@ def parse_arguments():
         "--algo",
         "-a",
         type=str,
-        choices=["kmeans", "maxmin", "agglomerative", "birch", "ward", "spectral"],
+        choices=["kmeans", "maxmin", "agglomerative", "birch", "spectral"],
         default="kmeans",
         help="Clustering algorithm to use (default: kmeans).",
     )
