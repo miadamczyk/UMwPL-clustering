@@ -32,9 +32,9 @@ def parse_arguments():
         "--algo",
         "-a",
         type=str,
-        choices=["kmeans", "maxmin"],
-        default="kmeans",
-        help="Clustering algorithm to use (default: kmeans).",
+        choices=["kmedoids", "maxmin"],
+        default="kmedoids",
+        help="Clustering algorithm to use (default: kmedoids).",
     )
     parser.add_argument(
         "--tsne",
