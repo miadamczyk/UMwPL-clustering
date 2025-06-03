@@ -1,9 +1,21 @@
 from sklearn.base import BaseEstimator, TransformerMixin
 from rdkit import Chem
-from rdkit.Chem import AllChem, MACCSkeys, RDKFingerprint
 from rdkit import DataStructs
+from rdkit.Chem import MACCSkeys, RDKFingerprint, rdFingerprintGenerator
 import numpy as np
+from rdkit.Chem import rdMolDescriptors
+from rdkit.DataStructs import ConvertToNumpyArray
 
+def smiles_to_fingerprints(smiles_list, n_bits=2048):
+    fps = []
+    for sm in smiles_list:
+        mol = Chem.MolFromSmiles(sm)
+        if mol is not None:
+            fp = rdMolDescriptors.GetMorganFingerprintAsBitVect(mol, 2, nBits=n_bits)
+            arr = np.zeros((n_bits,), dtype=int)
+            ConvertToNumpyArray(fp, arr)
+            fps.append(arr)
+    return np.array(fps)
 
 class FingerprintTransformer(BaseEstimator, TransformerMixin):
     def __init__(self, fp_type='morgan', n_bits=2048, radius=2, return_distance_matrix=False):
@@ -16,9 +28,7 @@ class FingerprintTransformer(BaseEstimator, TransformerMixin):
 
     def fit(self, X, y=None):
         if self.fp_type == 'morgan':
-            self.fp_generator = AllChem.GetMorganGenerator(
-                radius=self.radius, fpSize=self.n_bits
-            )
+            self.fp_generator = rdFingerprintGenerator.GetMorganGenerator(radius=self.radius, fpSize=self.n_bits)
         return self
 
     def _compute_fingerprint(self, mol):
@@ -67,7 +77,6 @@ class FingerprintTransformer(BaseEstimator, TransformerMixin):
             return dist_matrix
 
         else:
-            # Only return valid fps (e.g., for maxmin)
             return [fp for fp in fps if fp is not None]
 
     def get_rdkit_fingerprints(self, X):

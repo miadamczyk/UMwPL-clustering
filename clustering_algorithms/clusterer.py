@@ -1,3 +1,4 @@
+from sklearn.cluster import KMeans, AgglomerativeClustering, Birch, SpectralClustering
 from sklearn_extra.cluster import KMedoids
 from clustering_algorithms.maxmin import MaxMinFingerprintClustering
 from sklearn.pipeline import Pipeline
@@ -8,11 +9,21 @@ def get_clusterer(name: str, n_clusters: int = 3, random_state: int = 42, fp_typ
     if name == "kmedoids":
         transformer = FingerprintTransformer(fp_type=fp_type, return_distance_matrix=True)
         clusterer = KMedoids(n_clusters=n_clusters, metric="precomputed", random_state=random_state)
-    elif name == "maxmin":
-        transformer = FingerprintTransformer(fp_type=fp_type, return_distance_matrix=False)
-        clusterer = MaxMinFingerprintClustering(n_clusters=n_clusters, random_state=random_state)
     else:
-        raise ValueError(f"Unsupported clustering algorithm: {name}")
+        transformer = FingerprintTransformer(fp_type=fp_type, return_distance_matrix=False)
+
+        clustering_algorithms = {
+            "kmeans": KMeans(n_clusters=n_clusters, random_state=random_state),
+            "maxmin": MaxMinFingerprintClustering(n_clusters=n_clusters, random_state=random_state),
+            "agglomerative": AgglomerativeClustering(n_clusters=n_clusters),
+            "birch": Birch(n_clusters=n_clusters),
+            "spectral": SpectralClustering(n_clusters=n_clusters),
+        }
+
+        if name not in clustering_algorithms:
+            raise ValueError(f"Unsupported clustering algorithm: {name}")
+
+        clusterer = clustering_algorithms[name]
 
     pipeline = Pipeline([
         ("fingerprints", transformer),

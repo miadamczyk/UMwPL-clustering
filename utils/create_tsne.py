@@ -1,24 +1,9 @@
 from sklearn.manifold import TSNE
-from rdkit import Chem
-from rdkit.Chem import rdMolDescriptors
-from rdkit.DataStructs import ConvertToNumpyArray
+from utils.fingerprint_transformer import smiles_to_fingerprints
 
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-
-
-def smiles_to_fingerprints(smiles_list, n_bits=2048):
-    fps = []
-    for sm in smiles_list:
-        mol = Chem.MolFromSmiles(sm)
-        if mol is not None:
-            fp = rdMolDescriptors.GetMorganFingerprintAsBitVect(mol, 2, nBits=n_bits)
-            arr = np.zeros((n_bits,), dtype=int)
-            ConvertToNumpyArray(fp, arr)
-            fps.append(arr)
-    return np.array(fps)
-
 
 def generate_tsne(
     csv_path,
@@ -64,7 +49,6 @@ def generate_tsne(
     plt.title(title)
     plt.xlabel("t-SNE 1")
     plt.ylabel("t-SNE 2")
-    plt.legend(loc="upper right", title="Clusters")
     plt.tight_layout()
     plt.savefig(save_path)
     plt.close()
