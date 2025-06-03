@@ -18,11 +18,12 @@ def smiles_to_fingerprints(smiles_list, n_bits=2048):
     return np.array(fps)
 
 class FingerprintTransformer(BaseEstimator, TransformerMixin):
-    def __init__(self, fp_type='morgan', n_bits=2048, radius=2, return_distance_matrix=False):
+    def __init__(self, fp_type='morgan', n_bits=2048, radius=2, return_distance_matrix=False, return_as_rdkit=False):
         self.fp_type = fp_type
         self.n_bits = n_bits
         self.radius = radius
         self.return_distance_matrix = return_distance_matrix
+        self.return_as_rdkit = return_as_rdkit  # new flag for Butina-style algorithms
 
         self.fp_generator = None
 
@@ -76,8 +77,18 @@ class FingerprintTransformer(BaseEstimator, TransformerMixin):
                     dist_matrix[i, j] = dist_matrix[j, i] = dist
             return dist_matrix
 
+        elif self.return_as_rdkit:
+            return fps
+
         else:
-            return [fp for fp in fps if fp is not None]
+            fp_arrays = []
+            for fp in fps:
+                if fp is None:
+                    continue
+                arr = np.zeros((self.n_bits,), dtype=int)
+                ConvertToNumpyArray(fp, arr)
+                fp_arrays.append(arr)
+            return np.array(fp_arrays)
 
     def get_rdkit_fingerprints(self, X):
         return self.transform(X)

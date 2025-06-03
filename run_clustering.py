@@ -18,7 +18,7 @@ def parse_arguments():
         "--clusters",
         "-k",
         type=int,
-        required=True,
+        required=False,
         help="Number of clusters to generate.",
     )
     parser.add_argument(
@@ -32,7 +32,7 @@ def parse_arguments():
         "--algo",
         "-a",
         type=str,
-        choices=["kmedoids", "maxmin", "agglomerative", "birch", "spectral"],
+        choices=["kmedoids", "maxmin", "agglomerative", "birch", "spectral", "butina"],
         default="kmeans",
         help="Clustering algorithm to use (default: kmedoids).",
     )
@@ -72,7 +72,10 @@ def main():
     smiles = df["Smiles"].dropna().tolist()
 
     try:
-        pipeline = get_clusterer(args.algo, n_clusters=args.clusters)
+        if args.algo == "butina":
+            pipeline = get_clusterer(args.algo)
+        else:
+            pipeline = get_clusterer(args.algo, n_clusters=args.clusters)
     except ValueError as e:
         print(e)
         return
@@ -96,19 +99,18 @@ def main():
     )
 
     csv_name = os.path.splitext(os.path.basename(args.csv))[0]
-    num_clusters = int(args.clusters)
 
     if args.tsne or args.umap:
         print("\nGenerating visualization...")
 
         if args.tsne:
-            save_path = f"tsne_{csv_name}-{args.algo}-clusters_{num_clusters}.png"
+            save_path = f"tsne_{csv_name}-{args.algo}-clusters.png"
             generate_tsne(
                 args.csv, labels, save_path=save_path, metrics_info=metrics_info
             )
 
         if args.umap:
-            save_path = f"umap_{csv_name}-{args.algo}-clusters_{num_clusters}.png"
+            save_path = f"umap_{csv_name}-{args.algo}-clusters.png"
             generate_umap(
                 args.csv, labels, save_path=save_path, metrics_info=metrics_info
             )
