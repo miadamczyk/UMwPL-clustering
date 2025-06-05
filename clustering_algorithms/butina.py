@@ -1,5 +1,6 @@
 from sklearn.base import BaseEstimator, ClusterMixin
-from rdkit.DataStructs.cDataStructs import ExplicitBitVect, TanimotoSimilarity
+from rdkit.DataStructs.cDataStructs import ExplicitBitVect
+from rdkit.DataStructs import BulkTanimotoSimilarity
 from rdkit.SimDivFilters import rdSimDivPickers
 import numpy as np
 
@@ -30,14 +31,11 @@ class ButinaFingerprintClustering(BaseEstimator, ClusterMixin):
         labels = [-1] * len(X)
         clusters = [[] for _ in leader_indices]
 
+        leaders = [X[i] for i in leader_indices]
+
         for i, fp in enumerate(X):
-            max_sim = -1
-            best_cluster = -1
-            for cluster_id, leader_idx in enumerate(leader_indices):
-                sim = TanimotoSimilarity(fp, X[leader_idx])
-                if sim > max_sim:
-                    max_sim = sim
-                    best_cluster = cluster_id
+            sims = BulkTanimotoSimilarity(fp, leaders)
+            best_cluster = int(np.argmax(sims))
             labels[i] = best_cluster
             clusters[best_cluster].append(i)
 
@@ -52,15 +50,11 @@ class ButinaFingerprintClustering(BaseEstimator, ClusterMixin):
         if self.leader_indices_ is None or self.X_ is None:
             raise ValueError("Model has not been fitted yet.")
 
+        leaders = [self.X_[i] for i in self.leader_indices_]
         preds = []
         for fp in X:
-            max_sim = -1
-            best_cluster = -1
-            for cluster_id, leader_idx in enumerate(self.leader_indices_):
-                sim = TanimotoSimilarity(fp, self.X_[leader_idx])
-                if sim > max_sim:
-                    max_sim = sim
-                    best_cluster = cluster_id
+            sims = BulkTanimotoSimilarity(fp, leaders)
+            best_cluster = int(np.argmax(sims))
             preds.append(best_cluster)
         return np.array(preds)
 
