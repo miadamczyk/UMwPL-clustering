@@ -18,13 +18,15 @@ def smiles_to_fingerprints(smiles_list, n_bits=2048):
     return np.array(fps)
 
 class FingerprintTransformer(BaseEstimator, TransformerMixin):
-    def __init__(self, fp_type='morgan', n_bits=2048, radius=2, return_distance_matrix=False, return_as_rdkit=False):
+    def __init__(self, fp_type='morgan', n_bits=2048, radius=2,
+                 return_distance_matrix=False, return_as_rdkit=False,
+                 return_mols=False):  # New flag here
         self.fp_type = fp_type
         self.n_bits = n_bits
         self.radius = radius
         self.return_distance_matrix = return_distance_matrix
-        self.return_as_rdkit = return_as_rdkit  # new flag for Butina-style algorithms
-
+        self.return_as_rdkit = return_as_rdkit
+        self.return_mols = return_mols
         self.fp_generator = None
 
     def fit(self, X, y=None):
@@ -45,19 +47,25 @@ class FingerprintTransformer(BaseEstimator, TransformerMixin):
         else:
             raise ValueError(f"Unsupported fingerprint type: {self.fp_type}")
 
-    def _is_valid_smiles(self, sm):
+    def _smiles_to_mol(self, sm):
         try:
-            mol = Chem.MolFromSmiles(sm)
-            return mol
+            return Chem.MolFromSmiles(sm)
         except Exception:
-            return False
+            return None
 
     def transform(self, X):
         X = np.ravel(X).tolist()
+        if self.return_mols:
+            mols = []
+            for sm in X:
+                mol = self._smiles_to_mol(sm)
+                mols.append(mol)
+            return mols
+
         fps = []
         for sm in X:
-            mol = self._is_valid_smiles(sm)
-            if not mol:
+            mol = self._smiles_to_mol(sm)
+            if mol is None:
                 fps.append(None)
                 continue
             fp = self._compute_fingerprint(mol)

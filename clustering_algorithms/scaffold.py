@@ -16,7 +16,10 @@ class ScaffoldClustering(BaseEstimator, ClusterMixin):
         if not isinstance(X, (list, tuple)):
             raise TypeError("Input must be a list or tuple of RDKit molecules.")
         for i, mol in enumerate(X):
-            if mol is None or not isinstance(mol, Chem.Mol):
+            if mol is None:
+                raise ValueError(f"Element at index {i} is None.")
+            if not isinstance(mol, Chem.Mol):
+                print(f"Invalid element at index {i}: {mol}")
                 raise ValueError(f"Element at index {i} is not a valid RDKit Mol object.")
 
     def fit(self, X, y=None):
