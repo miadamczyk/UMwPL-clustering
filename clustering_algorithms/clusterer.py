@@ -36,7 +36,7 @@ def get_clusterer(
 
     if name == "kmedoids":
         transformer = FingerprintTransformer(fp_type=fp_type, return_distance_matrix=True)
-        clusterer = KMedoids(n_clusters=n_clusters, metric="precomputed", random_state=random_state)
+        clusterer = KMedoids(n_clusters=n_clusters, metric="precomputed", random_state=random_state, max_iter = 500)
 
     elif name == "maxmin":
         transformer = FingerprintTransformer(fp_type=fp_type, return_as_rdkit=True)

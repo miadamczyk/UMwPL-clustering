@@ -26,7 +26,7 @@ def parse_arguments():
         choices=[
             "kmedoids", "birch", "maxmin", "butina", "scaffold", "jarvis-patrick"
         ],
-        default="kmeans",
+        default="butina",
         help="Clustering algorithm to use."
     )
     parser.add_argument(
@@ -120,7 +120,6 @@ def main():
         if args.umap:
             save_path = f"umap_{csv_name}-{args.algo}-clusters.png"
             generate_umap(args.csv, labels, save_path=save_path, metrics_info=metrics_info)
-
 
 if __name__ == "__main__":
     main()
