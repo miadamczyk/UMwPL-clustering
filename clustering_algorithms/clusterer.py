@@ -9,12 +9,12 @@ from utils.fingerprint_transformer import FingerprintTransformer
 
 
 def get_clusterer(
-    name: str,
-    n_clusters: int = 3,
-    random_state: int = 42,
-    fp_type: str = "morgan",
-    neighbor_k: int = 5,
-    min_shared: int = 3,
+        name: str,
+        n_clusters: int = 3,
+        random_state: int = 42,
+        fp_type: str = "morgan",
+        neighbor_k: int = 5,
+        min_shared: int = 3,
 ):
     name = name.lower()
 
@@ -36,7 +36,7 @@ def get_clusterer(
 
     if name == "kmedoids":
         transformer = FingerprintTransformer(fp_type=fp_type, return_distance_matrix=True)
-        clusterer = KMedoids(n_clusters=n_clusters, metric="precomputed", random_state=random_state, max_iter = 500)
+        clusterer = KMedoids(n_clusters=n_clusters, metric="precomputed", random_state=random_state, max_iter=500)
 
     elif name == "maxmin":
         transformer = FingerprintTransformer(fp_type=fp_type, return_as_rdkit=True)

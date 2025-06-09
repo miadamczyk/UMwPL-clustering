@@ -47,9 +47,9 @@ class JarvisPatrickClustering(BaseEstimator, ClusterMixin):
                 if labels[j] != -1:
                     continue
                 if (
-                    i in neighbor_lists[j]
-                    and j in neighbor_lists[i]
-                    and len(neighbor_lists[i] & neighbor_lists[j]) >= self.k_min
+                        i in neighbor_lists[j]
+                        and j in neighbor_lists[i]
+                        and len(neighbor_lists[i] & neighbor_lists[j]) >= self.k_min
                 ):
                     labels[j] = cluster_id
             cluster_id += 1
