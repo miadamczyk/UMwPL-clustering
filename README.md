@@ -51,7 +51,7 @@ python main.py --csv data.csv --algo butina --tsne
 
 # Environment Setup
 
-1. Make sure Python **?3.8** is installed.
+1. Make sure Python **3.8** is installed.
 2. (Optional) Create a virtual environment:
 
 ```bash
@@ -109,11 +109,11 @@ pip install ruff
 # Project Structure
 
 ```
-??? main.py                  # Main script
-??? clustering_algorithms/   # Clustering algorithm implementations
-??? utils/                   # Visualization, metrics, data preprocessing
-??? pyproject.toml           # Project configuration and dependencies
-??? README.md                # This file
+main.py                  # Main script
+--- clustering_algorithms/   # Clustering algorithm implementations
+--- utils/                   # Visualization, metrics, data preprocessing
+--- pyproject.toml           # Project configuration and dependencies
+--- README.md                # This file
 ```
 
 ---
