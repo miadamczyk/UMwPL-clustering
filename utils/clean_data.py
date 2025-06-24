@@ -4,10 +4,6 @@ import os
 from glob import glob
 
 
-# Example terminal usage:
-# python sc#ript_name.py data/ cleaned_data/
-
-
 def process_chembl_data(input_csv: str, output_csv: str) -> None:
     try:
         try:
