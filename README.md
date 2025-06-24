@@ -120,10 +120,10 @@ main.py                  # Main script
 
 # Authors
 
-- Mi≥osz Adamczyk  
+- Mi≈Çosz Adamczyk  
 - Illia Dovhalenko  
 - Kacper Marzol  
-- Filip Ska≥ka  
+- Filip Ska≈Çka  
 
 ---
 
