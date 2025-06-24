@@ -2,7 +2,7 @@
 name = "my_project"
 version = "0.1.0"
 description = "Clustering of molecular data using KMeans and MaxMin algorithms"
-authors = [{ name = "Your Name", email = "your.email@example.com" }]
+authors = [{ name = "Miłosz Adamczyk, Illia Dovhalenko, Kacper Marzol, Filip Skałka" }]
 requires-python = ">=3.8"
 
 dependencies = [
@@ -11,9 +11,17 @@ dependencies = [
     "rdkit",
     "ruff",
     "scikit-learn",
+    "scikit-learn-extra",
     "umap-learn",
     "matplotlib (>=3.7,<3.8)"
 ]
 
 [project.scripts]
 run-clustering = "run_clustering:main"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["clustering_algorithms", "utils"]

@@ -1,0 +1,2 @@
+[console_scripts]
+run-clustering = run_clustering:main
