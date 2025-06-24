@@ -12,3 +12,7 @@ venv/
 .vscode/
 
 *.png
+
+*.egg-info/
+
+build/lib/
