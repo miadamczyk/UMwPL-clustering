@@ -4,7 +4,7 @@ from rdkit.DataStructs import ConvertToNumpyArray
 
 import pandas as pd
 import matplotlib.pyplot as plt
-import umap
+from umap.umap_ import UMAP
 import numpy as np
 
 from utils.fingerprint_transformer import smiles_to_fingerprints
@@ -28,7 +28,7 @@ def generate_umap(
     if len(fingerprints) == 0:
         raise ValueError("No valid fingerprints found.")
 
-    reducer = umap.UMAP(
+    reducer = UMAP(
         n_components=2,
         n_neighbors=n_neighbors,
         min_dist=min_dist,

@@ -1,0 +1,7 @@
+Algorithm,adjusted_rand_score,completeness_score,homogeneity_score,mutual_info_score,normalized_mutual_info_score,silhouette_score,v_measure_score
+birch,0.017,0.692,0.137,0.832,0.227,0.079,0.227
+butina,0.037,0.794,0.739,4.571,0.765,0.282,0.765
+jarvis-patrick,0.025,0.807,0.888,5.5,0.845,0.235,0.845
+kmedoids,0.005,0.674,0.105,0.625,0.169,-0.021,0.169
+maxmin,0.002,0.636,0.091,0.552,0.158,-0.003,0.158
+scaffold,0.036,0.799,0.773,4.775,0.785,0.165,0.785
